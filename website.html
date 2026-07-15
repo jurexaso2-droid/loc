@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RexMaker Music - AI Studio Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              glassBg: 'rgba(255, 255, 255, 0.07)',
+              glassBorder: 'rgba(255, 255, 255, 0.12)',
+              slateDark: '#0A0A0E',
+              neonIndigo: '#6366F1',
+              neonViolet: '#8B5CF6',
+              neonCyan: '#818CF8'
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts & Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #0A0A0E;
+      }
+      .backdrop-blur-glass {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      /* Custom glowing animation */
+      @keyframes float-glow {
+        0%, 100% { transform: translateY(0px) scale(1); filter: brightness(1); }
+        50% { transform: translateY(-4px) scale(1.02); filter: brightness(1.15); }
+      }
+      .glow-btn {
+        animation: float-glow 3s ease-in-out infinite;
+      }
+      /* Custom Equalizer Animation */
+      @keyframes eq-bar {
+        0%, 100% { height: 15%; }
+        50% { height: 85%; }
+      }
+      .eq-bar-anim {
+        animation: eq-bar 0.8s ease-in-out infinite;
+      }
+    </style>
+  </head>
+  <body class="h-full text-slate-100 flex flex-col justify-between overflow-x-hidden relative">
+    
+    <!-- Background Radial Gradients -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <div class="absolute -top-[20%] -left-[10%] w-[80%] h-[80%] bg-indigo-600/15 blur-[120px] rounded-full"></div>
+      <div class="absolute top-[30%] -right-[20%] w-[90%] h-[90%] bg-violet-700/10 blur-[140px] rounded-full"></div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="border-b border-glassBorder bg-slateDark/50 backdrop-blur-glass sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-neonIndigo text-3xl">auto_awesome</span>
+            <span class="text-xl font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-neonCyan to-neonViolet">REXMAKER MUSIC</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="px-3 py-1 rounded-full border border-glassBorder bg-white/5 text-xs text-neonCyan font-medium flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Offline Synth Active
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Body Layout -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8 z-10 relative">
+      
+      <!-- Left Column: Generator Form (7 cols) -->
+      <section class="lg:col-span-7 flex flex-col gap-6">
+        <div class="backdrop-blur-glass bg-glassBg border border-glassBorder p-6 rounded-3xl flex flex-col gap-5 shadow-2xl relative">
+          
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-neonCyan">music_video</span>
+            <h2 class="text-lg font-semibold tracking-wide">Generate Procedural Track</h2>
+          </div>
+
+          <!-- Lyrics Input Sheet -->
+          <div class="flex flex-col gap-2">
+            <label class="text-xs text-slate-400 font-medium tracking-wide">LYRICS SHEET</label>
+            <textarea id="lyricsInput" placeholder="Paste your lyrics here..." rows="6" class="w-full rounded-2xl bg-black/30 border border-glassBorder p-4 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-neonIndigo transition-all resize-none text-sm leading-relaxed">Midnight stars in a neon dome,
+Walking silent streets alone.
+Drifting waves in digital space,
+Searching for a quiet place.</textarea>
+          </div>
+
+          <!-- Grid Configuration Parameters -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Genre Selector -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs text-slate-400 font-medium tracking-wide">GENRE</label>
+              <select id="genreSelect" class="w-full rounded-xl bg-black/40 border border-glassBorder p-3 text-slate-200 focus:outline-none focus:border-neonIndigo text-sm">
+                <option value="Synthwave">Synthwave</option>
+                <option value="Pop">Pop</option>
+                <option value="Rock">Rock</option>
+                <option value="Jazz">Jazz</option>
+                <option value="Cyberpunk">Cyberpunk</option>
+              </select>
+            </div>
+
+            <!-- Mood Selector -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs text-slate-400 font-medium tracking-wide">MOOD</label>
+              <select id="moodSelect" class="w-full rounded-xl bg-black/40 border border-glassBorder p-3 text-slate-200 focus:outline-none focus:border-neonIndigo text-sm">
+                <option value="Energetic">Energetic</option>
+                <option value="Dark & Moody">Dark & Moody</option>
+                <option value="Dreamy">Dreamy</option>
+                <option value="Epic">Epic</option>
+                <option value="Melancholic">Melancholic</option>
+              </select>
+            </div>
+
+            <!-- Vocal Style -->
+            <div class="flex flex-col gap-1.5 md:col-span-2">
+              <label class="text-xs text-slate-400 font-medium tracking-wide">VOCAL STYLE TIMBRE</label>
+              <input id="vocalStyleInput" type="text" value="Female Vocalist, Reverb-Drenched, Clear" class="w-full rounded-xl bg-black/40 border border-glassBorder p-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-neonIndigo text-sm" />
+            </div>
+
+          </div>
+
+          <!-- Quality Track Slider Toggle -->
+          <div class="flex items-center justify-between py-2 border-t border-glassBorder/50 mt-2">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium">Track Output Quality</span>
+              <span class="text-xs text-slate-400" id="qualityLabel">Preview Clip (Procedural, ~15s)</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="qualityToggle" class="sr-only peer">
+              <div class="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-300 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-neonIndigo"></div>
+            </label>
+          </div>
+
+          <!-- Master Synthesize Action Button -->
+          <button id="synthBtn" class="w-full h-14 bg-neonIndigo hover:bg-indigo-500 active:scale-95 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all shadow-lg glow-btn cursor-pointer">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            <span>Generate & Tune Track</span>
+          </button>
+
+          <!-- Generation Progress Card HUD -->
+          <div id="progressHUD" class="hidden border border-glassBorder/60 bg-black/20 p-5 rounded-2xl flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full border-2 border-neonIndigo border-t-transparent animate-spin"></div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold">Synthesizing Local Master...</span>
+                  <span id="stepName" class="text-xs text-slate-400">Initializing offline audio wave generators...</span>
+                </div>
+              </div>
+              <span id="progressPercent" class="text-sm font-bold text-neonCyan">0%</span>
+            </div>
+            <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div id="progressBar" class="w-0 h-full bg-neonIndigo transition-all duration-300"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Master Player Deck -->
+        <div id="playerDeck" class="hidden backdrop-blur-glass bg-glassBg border border-glassBorder p-5 rounded-3xl flex flex-col gap-4 shadow-xl">
+          <div class="flex items-center gap-3">
+            <!-- Rotating Vinyl Icon -->
+            <div id="vinylIcon" class="w-12 h-12 rounded-full bg-gradient-to-r from-neonIndigo to-neonViolet flex items-center justify-center transition-all duration-1000">
+              <span class="material-symbols-outlined text-white text-2xl">album</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 id="trackTitle" class="text-sm font-bold text-white truncate">Stardust Echoes</h3>
+              <p id="trackDetails" class="text-xs text-slate-400 truncate">Synthwave, Energetic, Female Vocalist</p>
+            </div>
+            <button id="favBtn" class="text-slate-400 hover:text-amber-500 transition-colors">
+              <span class="material-symbols-outlined font-fill-0" id="favIcon">star</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Audio Bars Visualizer -->
+          <div class="flex items-end justify-between h-8 px-2 bg-black/20 rounded-lg overflow-hidden gap-0.5" id="waveVisualizer">
+            <!-- 28 bars for visual balance -->
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 10%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 20%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 15%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 40%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 30%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 60%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 45%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 70%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 55%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 80%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 65%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 90%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 75%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 95%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 80%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 70%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 50%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 60%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 40%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 55%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 30%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 45%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 25%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 35%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 15%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 20%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 10%"></div>
+            <div class="w-1.5 bg-gradient-to-t from-neonIndigo to-neonCyan rounded-t" style="height: 5%"></div>
+          </div>
+
+          <!-- Slider Timeline -->
+          <div class="flex flex-col gap-1">
+            <input type="range" id="playRange" min="0" max="100" value="0" class="w-full accent-neonCyan h-1 bg-white/10 rounded-lg cursor-pointer" />
+            <div class="flex justify-between text-[10px] text-slate-400">
+              <span id="playTime">00:00</span>
+              <span id="totalTime">00:15</span>
+            </div>
+          </div>
+
+          <!-- Audio element (Hidden) -->
+          <audio id="localAudio" class="hidden"></audio>
+
+          <!-- Control Actions -->
+          <div class="flex items-center justify-between px-2">
+            <button id="delBtn" class="text-slate-400 hover:text-red-400 transition-colors">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+            <button id="playPauseBtn" class="w-12 h-12 rounded-full bg-neonCyan text-slateDark flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-md">
+              <span class="material-symbols-outlined text-2xl font-bold" id="playIcon">play_arrow</span>
+            </button>
+            <button id="downloadBtn" class="text-neonCyan hover:text-white transition-colors flex items-center justify-center">
+              <span class="material-symbols-outlined text-2xl">file_download</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Lyrics Notepad Chatbox (5 cols) -->
+      <section class="lg:col-span-5 backdrop-blur-glass bg-glassBg border border-glassBorder rounded-3xl flex flex-col h-[600px] shadow-2xl relative">
+        
+        <!-- Chatbox Header -->
+        <div class="p-4 border-b border-glassBorder flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-neonCyan">psychology</span>
+            <div>
+              <h3 class="text-sm font-bold">Lyrics Notepad</h3>
+              <p class="text-[10px] text-slate-400">Brainstorm ideas with AI assistant</p>
+            </div>
+          </div>
+          <button id="clearChatBtn" class="text-slate-400 hover:text-white text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">delete_sweep</span>
+            Clear
+          </button>
+        </div>
+
+        <!-- Chat messages area -->
+        <div id="chatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-4 text-xs">
+          <!-- Assistant Intro -->
+          <div class="self-start max-w-[85%] bg-white/5 border border-glassBorder rounded-2xl p-3.5 leading-relaxed text-slate-300">
+            Hello! I'm your song-writing co-pilot. Drop a concept, word list, or request for a hook, and I'll generate lyrics in this chatbox! Feel free to copy them into the synth panel.
+          </div>
+        </div>
+
+        <!-- Chat Input Footer -->
+        <div class="p-3 border-t border-glassBorder bg-black/20 flex gap-2 rounded-b-3xl">
+          <input type="text" id="chatInput" placeholder="Ask AI to generate a chorus, rhyme..." class="flex-1 bg-black/40 border border-glassBorder rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neonCyan placeholder-slate-500" />
+          <button id="sendChatBtn" class="w-10 h-10 rounded-xl bg-neonCyan text-slateDark flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-lg">send</span>
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Visual Footer -->
+    <footer class="border-t border-glassBorder bg-slateDark/75 backdrop-blur-glass py-4 text-center text-[10px] text-slate-400 z-10 relative">
+      <p>&copy; 2026 RexMaker Music. All rights reserved. Procedural offline sound waves synthesized native in client browser.</p>
+    </footer>
+
+    <!-- Interactive Logic Script -->
+    <script>
+      // DOM Elements Selection
+      const lyricsInput = document.getElementById('lyricsInput');
+      const genreSelect = document.getElementById('genreSelect');
+      const moodSelect = document.getElementById('moodSelect');
+      const vocalStyleInput = document.getElementById('vocalStyleInput');
+      const qualityToggle = document.getElementById('qualityToggle');
+      const qualityLabel = document.getElementById('qualityLabel');
+      
+      const synthBtn = document.getElementById('synthBtn');
+      const progressHUD = document.getElementById('progressHUD');
+      const stepName = document.getElementById('stepName');
+      const progressPercent = document.getElementById('progressPercent');
+      const progressBar = document.getElementById('progressBar');
+      
+      const playerDeck = document.getElementById('playerDeck');
+      const vinylIcon = document.getElementById('vinylIcon');
+      const trackTitle = document.getElementById('trackTitle');
+      const trackDetails = document.getElementById('trackDetails');
+      const waveVisualizer = document.getElementById('waveVisualizer');
+      const playRange = document.getElementById('playRange');
+      const playTime = document.getElementById('playTime');
+      const totalTime = document.getElementById('totalTime');
+      const localAudio = document.getElementById('localAudio');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const playIcon = document.getElementById('playIcon');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const delBtn = document.getElementById('delBtn');
+      const favBtn = document.getElementById('favBtn');
+      const favIcon = document.getElementById('favIcon');
+
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const sendChatBtn = document.getElementById('sendChatBtn');
+      const clearChatBtn = document.getElementById('clearChatBtn');
+
+      // State Trackers
+      let generatedWavBlob = null;
+      let generatedWavUrl = null;
+      let isPlaying = false;
+      let audioDuration = 15;
+      let isFavorite = false;
+
+      // Handle quality toggle labels
+      qualityToggle.addEventListener('change', () => {
+        if (qualityToggle.checked) {
+          qualityLabel.textContent = "Full-Length (Procedural, ~60s)";
+          audioDuration = 60;
+        } else {
+          qualityLabel.textContent = "Preview Clip (Procedural, ~15s)";
+          audioDuration = 15;
+        }
+      });
+
+      // Procedural Audio WAV Synthesizer (Mathematical WAV encoding)
+      function generateWavBytes(genre, durationSec) {
+        const sampleRate = 22050;
+        const numChannels = 1;
+        const bitsPerSample = 16;
+        const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+        const blockAlign = numChannels * (bitsPerSample / 8);
+        
+        let baseFreqs = [220, 277.18, 329.63, 440]; // A Major default
+        const lowerGenre = genre.toLowerCase();
+        if (lowerGenre.includes('synth') || lowerGenre.includes('cyber')) {
+          baseFreqs = [110.0, 130.81, 146.83, 164.81];
+        } else if (lowerGenre.includes('pop') || lowerGenre.includes('rock')) {
+          baseFreqs = [261.63, 293.66, 329.63, 392.00];
+        } else if (lowerGenre.includes('jazz')) {
+          baseFreqs = [220.0, 261.63, 311.13, 349.23];
+        }
+        
+        const totalSamples = sampleRate * durationSec;
+        const dataSize = totalSamples * blockAlign;
+        const fileSize = 36 + dataSize;
+        
+        const buffer = new ArrayBuffer(44 + dataSize);
+        const view = new DataView(buffer);
+        
+        // Write WAVE headers
+        const writeString = (v, offset, str) => {
+          for (let i = 0; i < str.length; i++) {
+            v.setUint8(offset + i, str.charCodeAt(i));
+          }
+        };
+        
+        writeString(view, 0, 'RIFF');
+        view.setUint32(4, fileSize, true);
+        writeString(view, 8, 'WAVE');
+        writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true); // Linear PCM
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, byteRate, true);
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, bitsPerSample, true);
+        writeString(view, 36, 'data');
+        view.setUint32(40, dataSize, true);
+        
+        const noteLengthSec = 0.5;
+        const noteSamples = sampleRate * noteLengthSec;
+        
+        let offset = 44;
+        for (let i = 0; i < totalSamples; i++) {
+          const noteIdx = Math.floor(i / noteSamples) % baseFreqs.length;
+          const freq = baseFreqs[noteIdx];
+          
+          const t = i / sampleRate;
+          const lfo = 1.0 + 0.05 * Math.sin(2.0 * Math.PI * 6.0 * t); // 6Hz Vibrato LFO
+          const angle = 2.0 * Math.PI * freq * lfo * t;
+          
+          const sineValue = Math.sin(angle);
+          const frac = (freq * lfo * t) % 1.0;
+          const triValue = frac < 0.5 ? (4.0 * frac - 1.0) : (3.0 - 4.0 * frac);
+          
+          // Mix 60% sine and 40% triangle wave
+          const valueDouble = (sineValue * 0.6 + triValue * 0.4);
+          
+          // ADSR envelope (simple linear Attack-Decay-Sustain-Release)
+          const noteSampleIdx = i % noteSamples;
+          const attackSamples = noteSamples * 0.1;
+          const decaySamples = noteSamples * 0.1;
+          let env = 1.0;
+          if (noteSampleIdx < attackSamples) {
+            env = noteSampleIdx / attackSamples;
+          } else if (noteSampleIdx > noteSamples - decaySamples) {
+            env = (noteSamples - noteSampleIdx) / decaySamples;
+          }
+          
+          const sampleVal = Math.max(-32768, Math.min(32767, valueDouble * env * 15000));
+          view.setInt16(offset, sampleVal, true);
+          offset += 2;
+        }
+        
+        return new Blob([buffer], { type: 'audio/wav' });
+      }
+
+      // Generate track flow
+      synthBtn.addEventListener('click', async () => {
+        if (!lyricsInput.value.trim()) {
+          alert('Please enter lyrics first!');
+          return;
+        }
+
+        // Disable elements during generation
+        synthBtn.disabled = true;
+        synthBtn.classList.add('opacity-50', 'pointer-events-none');
+        progressHUD.classList.remove('hidden');
+        playerDeck.classList.add('hidden');
+        
+        // Stop any current playing audio
+        stopAudio();
+
+        // Realistic generation steps simulation
+        const steps = [
+          { name: "Initializing offline synthesizer engine...", progress: 15 },
+          { name: "Analyzing syllabic meter and structure...", progress: 35 },
+          { name: "Mapping procedural chord progression...", progress: 55 },
+          { name: "Generating rhythmic bassline & synth waveforms...", progress: 75 },
+          { name: "Applying dynamic envelope ADSR & audio mastering...", progress: 90 },
+          { name: "Compiling standard 16-bit PCM WAV container...", progress: 100 }
+        ];
+
+        for (const step of steps) {
+          stepName.textContent = step.name;
+          progressPercent.textContent = `${step.progress}%`;
+          progressBar.style.width = `${step.progress}%`;
+          await new Promise(r => setTimeout(r, 600));
+        }
+
+        // Complete generation, produce audio file
+        const genre = genreSelect.value;
+        const mood = moodSelect.value;
+        const vocal = vocalStyleInput.value;
+        
+        generatedWavBlob = generateWavBytes(genre, audioDuration);
+        
+        // Revoke old URL if existing
+        if (generatedWavUrl) {
+          URL.revokeObjectURL(generatedWavUrl);
+        }
+        generatedWavUrl = URL.createObjectURL(generatedWavBlob);
+        localAudio.src = generatedWavUrl;
+
+        // Set Title based on inputs
+        const words = lyricsInput.value.trim().split(/\s+/);
+        const derivedTitle = words.length > 2 ? `${words[0]} ${words[1]} ${words[2]}` : "Procedural Master";
+        trackTitle.textContent = derivedTitle.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+        trackDetails.textContent = `${genre}, ${mood}, ${vocal}`;
+        totalTime.textContent = audioDuration === 15 ? "00:15" : "01:00";
+
+        // Display results
+        progressHUD.classList.add('hidden');
+        playerDeck.classList.remove('hidden');
+        synthBtn.disabled = false;
+        synthBtn.classList.remove('opacity-50', 'pointer-events-none');
+        
+        // Auto-play newly generated track
+        playAudio();
+      });
+
+      // Audio Player controls
+      function playAudio() {
+        localAudio.play();
+        isPlaying = true;
+        playIcon.textContent = 'pause';
+        vinylIcon.classList.add('animate-spin');
+        // Enable equalizer animations
+        Array.from(waveVisualizer.children).forEach((bar, idx) => {
+          bar.classList.add('eq-bar-anim');
+          bar.style.animationDelay = `${idx * 0.05}s`;
+        });
+      }
+
+      function stopAudio() {
+        localAudio.pause();
+        isPlaying = false;
+        playIcon.textContent = 'play_arrow';
+        vinylIcon.classList.remove('animate-spin');
+        // Flat bars
+        Array.from(waveVisualizer.children).forEach(bar => {
+          bar.classList.remove('eq-bar-anim');
+        });
+      }
+
+      playPauseBtn.addEventListener('click', () => {
+        if (isPlaying) {
+          stopAudio();
+        } else {
+          playAudio();
+        }
+      });
+
+      localAudio.addEventListener('timeupdate', () => {
+        const cur = localAudio.currentTime;
+        const dur = localAudio.duration || audioDuration;
+        const progress = (cur / dur) * 100;
+        playRange.value = progress;
+        
+        const m = Math.floor(cur / 60);
+        const s = Math.floor(cur % 60).toString().padStart(2, '0');
+        playTime.textContent = `0${m}:${s}`;
+      });
+
+      playRange.addEventListener('input', () => {
+        const dur = localAudio.duration || audioDuration;
+        localAudio.currentTime = (playRange.value / 100) * dur;
+      });
+
+      localAudio.addEventListener('ended', () => {
+        stopAudio();
+        playRange.value = 0;
+        playTime.textContent = "00:00";
+      });
+
+      // Download Audio Action
+      downloadBtn.addEventListener('click', () => {
+        if (!generatedWavUrl) return;
+        const link = document.createElement('a');
+        link.href = generatedWavUrl;
+        link.download = `${trackTitle.textContent.toLowerCase().replace(/\s+/g, '_')}.wav`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+      // Delete Track Action
+      delBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to discard this synthesized track?')) {
+          stopAudio();
+          playerDeck.classList.add('hidden');
+          generatedWavBlob = null;
+          generatedWavUrl = null;
+        }
+      });
+
+      // Favorite toggle
+      favBtn.addEventListener('click', () => {
+        isFavorite = !isFavorite;
+        if (isFavorite) {
+          favIcon.classList.add('text-amber-500');
+          favIcon.textContent = 'star';
+        } else {
+          favIcon.classList.remove('text-amber-500');
+          favIcon.textContent = 'star';
+        }
+      });
+
+      // --- Chatbox Functionality ---
+      const responses = [
+        "That's a strong hook! Here is a custom verse that flows perfectly with it:\n\n(Verse)\nNeon rays cut the dark tonight,\nShadows dancing in the strobe light.\nPulse beats loud in an empty dome,\nFinding rhythm when we're far from home.",
+        "Beautiful lyricism. I brainstormed this nostalgic synthesizer chorus to pair with your lyrics:\n\n(Chorus)\nEchoes in the synthesizer stream,\nWe are living in a digital dream.\nTurn the dial, let the frequencies flow,\nInto the sunset, here we go!",
+        "Excellent meter. Here's a heavy, high-tempo cyberpunk bridge to accelerate the song structure:\n\n(Bridge)\nBinary blood, copper bone,\nWe are wires on a silicon throne.\nBreaking boundaries, breaking the mold,\nWatch our electronic story unfold."
+      ];
+
+      function appendMessage(sender, text) {
+        const bubble = document.createElement('div');
+        if (sender === 'user') {
+          bubble.className = "self-end max-w-[85%] bg-neonIndigo text-white rounded-2xl p-3 leading-relaxed shadow-md";
+        } else {
+          bubble.className = "self-start max-w-[85%] bg-white/5 border border-glassBorder text-slate-300 rounded-2xl p-3.5 leading-relaxed";
+        }
+        bubble.innerHTML = text.replace(/\n/g, '<br/>');
+        chatMessages.appendChild(bubble);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      sendChatBtn.addEventListener('click', () => {
+        const msgText = chatInput.value.trim();
+        if (!msgText) return;
+
+        appendMessage('user', msgText);
+        chatInput.value = '';
+
+        // Mock assistant thinking response
+        setTimeout(() => {
+          const randResponse = responses[Math.floor(Math.random() * responses.length)];
+          appendMessage('assistant', randResponse);
+        }, 1000);
+      });
+
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          sendChatBtn.click();
+        }
+      });
+
+      clearChatBtn.addEventListener('click', () => {
+        chatMessages.innerHTML = '';
+        appendMessage('assistant', "Workspace cleared! Ask me anything to generate more song hooks and verses.");
+      });
+    </script>
+  </body>
+</html>
